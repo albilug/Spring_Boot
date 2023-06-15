@@ -16,4 +16,4 @@ dependency-reduced-pom.xml
 README.html
 .idea
 *.iml
-.initial.src.main.resources.application.properties
+*.application.properties
