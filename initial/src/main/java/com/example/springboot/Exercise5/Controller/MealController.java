@@ -1,56 +1,66 @@
 package com.example.springboot.Exercise5.Controller;
 
-import com.example.springboot.Exercise5.Model.Ingredient;
+import com.example.springboot.Exercise5.Component.RestaurantConfig;
 import com.example.springboot.Exercise5.Model.Meal;
 import com.example.springboot.Exercise5.Service.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/meal")
 public class MealController {
     private MealService mealService;
+    private RestaurantConfig restaurantConfig;
 
     @Autowired
-    public MealController(MealService mealService) {
-        this.mealService = mealService;
+    public MealController(MealService mealSevice, RestaurantConfig restaurantConfig) {
+        this.mealService = mealSevice;
+        this.restaurantConfig = restaurantConfig;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<Meal>> getMeals() {
+    @PostMapping
+    public ResponseEntity<?> createMeal(@RequestBody Meal meal){
+        mealService.createMeal(meal);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/get/meals")
+    public ResponseEntity<List<Meal>> getMeals(){
         return ResponseEntity.ok(mealService.getMeals());
     }
 
-    @PutMapping("/meal")
-    public ResponseEntity<Meal> addMeal(@RequestBody Meal meal) {
-        mealService.addMeal(meal);
-        return ResponseEntity.ok(meal);
+    @GetMapping("/restaurant-config")
+    public ResponseEntity<RestaurantConfig> getRestaurantConfig(){
+        this.restaurantConfig.setMinPrice(23.00);
+        this.restaurantConfig.setTodaysDiscount(2.0);
+        return ResponseEntity.ok(restaurantConfig);
     }
 
-    @DeleteMapping("/meal/{id}")
-    public ResponseEntity<Meal> deleteMeal(@PathVariable long id) {
+    @PostMapping("/post/meal")
+    public ResponseEntity<String> addMeal(@RequestBody Meal meal){
+        try {
+            mealService.addMeal(meal);
+            return ResponseEntity.ok("Meal added!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/update/meal")
+    public ResponseEntity<String> updateMeal(@PathVariable Meal meal){
+        mealService.updateMeal(meal);
+        return ResponseEntity.ok("Meal updated!");
+    }
+
+
+    @DeleteMapping("/delete/meal/{id}")
+    public ResponseEntity<Meal> deleteMeal(@PathVariable long id){
         mealService.deleteMeal(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/meal")
-    public ResponseEntity<Meal> updateMeal(@RequestBody Meal meal) {
-        mealService.updateMeal(meal);
-        return ResponseEntity.ok(meal);
-    }
 
-    @GetMapping("/summer-meals")
-    public ResponseEntity<List<Meal>> getSummerMeals() {
-        return ResponseEntity.ok(mealService.getSummerMeals());
-    }
-
-    @GetMapping("/secret-formula")
-    public ResponseEntity<String> getSecretFormula() {
-        return ResponseEntity.ok("2 + 2 = 4");
-    }
 
 }
