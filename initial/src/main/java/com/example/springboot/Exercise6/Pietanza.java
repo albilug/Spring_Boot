@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Portata {
+public class Pietanza {
     @Id
     private Integer id;
     private String name;
@@ -13,7 +13,7 @@ public class Portata {
     private Integer calories;
     private boolean isWinterMeal;
 
-    public Portata(String name, String description, double price, Integer calories, boolean isWinterMeal) {
+    public Pietanza(String name, String description, double price, Integer calories, boolean isWinterMeal) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -21,7 +21,7 @@ public class Portata {
         this.isWinterMeal = isWinterMeal;
     }
 
-    public Portata() {}
+    public Pietanza() {}
 
     public String getName() {
         return name;
